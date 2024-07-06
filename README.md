@@ -21,6 +21,6 @@ Populate database
 Create the database then run:
 
 ```bash
-mysql <db_name> install/create_tables.sql
-mysql <db_name> install/initial_facts.sql
+mysql <db_name> < install/create_tables.sql
+mysql <db_name> < install/initial_facts.sql
 ```
