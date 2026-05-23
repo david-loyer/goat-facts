@@ -21,7 +21,7 @@ const poolConfig = {
   ...dbConfig,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 1,
+  queueLimit: 0,
   namedPlaceholders: true,
 };
 

@@ -7,12 +7,16 @@ const phoneNumber = process.env.TEST_PHONE_NUMBER;
 const endOfMessage = ` < To cancel daily goat facts, reply with 'cancel' >`
 
 try {
-  let  i = 0;
-  while (i++ < 20) {
-    const fact = await random(phoneNumber);
-    const message = goatify(fact.fact + endOfMessage);
-    console.debug(message);
+  const promises = [];
+  for (let i = 0; i < 20; i++) {
+    promises.push(
+      random(phoneNumber).then(fact => {
+        const message = goatify(fact.fact + endOfMessage);
+        console.debug(message);
+      })
+    );
   }
+  await Promise.all(promises);
 } catch (err) {
   console.error(err);
 } finally {
