@@ -32,6 +32,11 @@ export const markSent = async function (phone, factId) {
     "SELECT id FROM phones WHERE phone = :phone",
     { phone }
   );
+
+  if (!phones || !phones[0]) {
+    throw new Error(`Phone not found: ${phone}`);
+  }
+
   const [rows] = await db().query(
     "INSERT INTO sent_facts (phone_id, fact_id) VALUES (:phoneId, :factId)",
     { phoneId: phones[0].id, factId }
