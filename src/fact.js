@@ -7,22 +7,26 @@ export const random = async function (
   force = false
 ) {
   if (force) {
-    const [rows] = await db().query(
-      "SELECT * FROM facts ORDER BY RAND() LIMIT 1"
-    );
+    const [ids] = await db().query("SELECT id FROM facts");
+    if (ids.length === 0) return null;
+    const randomId = ids[Math.floor(Math.random() * ids.length)].id;
+    const [rows] = await db().query("SELECT * FROM facts WHERE id = ?", [randomId]);
     return rows[0];
   }
 
   const alreadySentIdsSql = `SELECT fact_id FROM sent_facts WHERE phone_id = (SELECT id FROM phones WHERE phone = :phone)`;
 
-  const [rows] = await db().query(
-    `SELECT * FROM facts WHERE id NOT IN (${alreadySentIdsSql}) AND funny = ${funny ? 1 : 0} AND ai = ${ai ? 1 : 0} ORDER BY RAND() LIMIT 1`,
+  const [ids] = await db().query(
+    `SELECT id FROM facts WHERE id NOT IN (${alreadySentIdsSql}) AND funny = ${funny ? 1 : 0} AND ai = ${ai ? 1 : 0}`,
     { phone }
   );
 
-  if (rows.length === 0) {
+  if (ids.length === 0) {
     return random(phone, false, ai, !funny && !ai);
   }
+
+  const randomId = ids[Math.floor(Math.random() * ids.length)].id;
+  const [rows] = await db().query("SELECT * FROM facts WHERE id = ?", [randomId]);
 
   return rows[0];
 };
