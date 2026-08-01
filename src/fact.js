@@ -28,13 +28,9 @@ export const random = async function (
 };
 
 export const markSent = async function (phone, factId) {
-  const [phones] = await db().query(
-    "SELECT id FROM phones WHERE phone = :phone",
-    { phone }
-  );
   const [rows] = await db().query(
-    "INSERT INTO sent_facts (phone_id, fact_id) VALUES (:phoneId, :factId)",
-    { phoneId: phones[0].id, factId }
+    "INSERT INTO sent_facts (phone_id, fact_id) SELECT id, :factId FROM phones WHERE phone = :phone",
+    { phone, factId }
   );
   return rows;
 };
